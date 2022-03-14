@@ -1,4 +1,5 @@
-cache:
+.cache:
+  key: $CI_COMMIT_REF_SLUG
   paths:
   - target/
 
@@ -9,21 +10,52 @@ stages:
   # - clean
   # rm -rf $CI_PROJECT_DIR $CI_PROJECT_DIR.tmp
 
-check:
+typo:
+  stage: check
+  script:
+  - typos
+
+fmt:
   stage: check
   script:
   - cargo fmt --check
-  - cargo c --tests
   # cargo udeps
+
+check_build:
+  stage: check
+  script:
+  - cargo c --bin idp_shop
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
 
 build:
   stage: build
+  artifacts:
+    paths: ['target/debug/idp_shop']
+    expire_in: 10 min
   script:
   - cargo b --bin idp_shop
+  only:
+  - dev
+  - feat/auto_deploy
 
-deploy:
+deploy_12:
   stage: deploy
   script:
-  - systemctl stop idp_shop
-  - cp target/debug/idp_shop /usr/local/bin/idp_shop
-  - systemctl start idp_shop
+  - sudo systemctl stop idp_shop
+  - sudo cp target/debug/idp_shop /usr/local/bin/idp_shop
+  - sudo systemctl start idp_shop
+  - systemctl status idp_shop
+  only:
+  - dev
+  - feat/auto_deploy
+
+deploy_82:
+  stage: deploy
+  script:
+  - ssh 82 "systemctl --user stop idp_shop"
+  - scp target/debug/idp_shop 82:~/deploy
+  - ssh 82 "systemctl --user start idp_shop"
+  only:
+  - dev
+  - feat/auto_deploy

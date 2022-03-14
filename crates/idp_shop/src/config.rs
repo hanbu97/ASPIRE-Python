@@ -33,7 +33,7 @@ impl ApiServer {
 #[derive(Deserialize, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct Postgres {
-    host: std::net::Ipv4Addr,
+    host: String,
     port: u16,
     username: String,
     password: String,
