@@ -101,7 +101,7 @@ CREATE TABLE if not exists public.finance_account (
                                         updated_at timestamp without time zone NOT NULL DEFAULT current_timestamp,
                                         is_deleted bool NOT NULL DEFAULT false,
                                         "version" int NOT NULL DEFAULT 0,
-                                   sea-     total_balance int not null default 0,
+                                        total_balance int not null default 0,
                                         avl_balance int not null default 0,
                                         blocked_balance int not null default 0,
                                         team_id bigint not null
