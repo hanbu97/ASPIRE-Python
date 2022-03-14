@@ -1,0 +1,29 @@
+cache:
+  paths:
+  - target/
+
+stages:
+  - check
+  - build
+  - deploy
+  # - clean
+  # rm -rf $CI_PROJECT_DIR $CI_PROJECT_DIR.tmp
+
+check:
+  stage: check
+  script:
+  - cargo fmt --check
+  - cargo c --tests
+  # cargo udeps
+
+build:
+  stage: build
+  script:
+  - cargo b --bin idp_shop
+
+deploy:
+  stage: deploy
+  script:
+  - systemctl stop idp_shop
+  - cp target/debug/idp_shop /usr/local/bin/idp_shop
+  - systemctl start idp_shop
