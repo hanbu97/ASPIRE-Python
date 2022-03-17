@@ -1,0 +1,29 @@
+[package]
+name = "db_schema"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "db_schema"
+path = "src/lib.rs"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+chrono = { version = "0.4", features = ["serde"] }
+quickcheck = "1"
+quickcheck_macros = "1"
+rand = "0.8"
+
+[dependencies.sea-orm]
+version = "^0.6.0"
+features = [
+  "macros",
+  "debug-print",
+  "runtime-tokio-native-tls",
+  "sqlx-postgres",
+  "with-chrono"
+  # "sqlx-mysql",
+  # "sqlx-sqlite",
+]
+default-features = false
+
