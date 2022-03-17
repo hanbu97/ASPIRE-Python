@@ -31,19 +31,16 @@ pub fn init_router() -> Router {
             )
             .nest(
                 "/finance",
-                Router::new().nest(
-                    "/account",
-                    Router::new()
-                        .route("/", get(apis::finance::get_finance_account))
-                        .route(
-                            "/charge/status",
-                            get(handler::finance::get_finace_charge_status),
-                        ),
-                ),
-            )
-            .route(
-                "/account",
-                on(MethodFilter::GET, apis::finance::get_finance_account),
+                Router::new()
+                    .nest(
+                        "/account",
+                        Router::new().route("/", get(apis::finance::get_finance_account)),
+                    )
+                    .nest(
+                        "/charge",
+                        Router::new()
+                            .route("/status", get(apis::finance::get_finace_charge_status)),
+                    ),
             ),
         // .nest("/demo", get(get_demos).post(create_demo)),
     )

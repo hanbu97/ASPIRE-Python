@@ -43,7 +43,6 @@ pub struct GetFinanceAccountRes {
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct GetChargeStatusReq {
-    pub team_id: I64String,
     pub charge_id: I64String,
 }
 #[derive(Serialize)]
