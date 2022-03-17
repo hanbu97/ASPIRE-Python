@@ -74,7 +74,7 @@ pub struct GetProductDetailRes {
 #[serde(rename_all = "camelCase")]
 pub struct Price {
     pub product_id: I64String,
-    pub r#type: String, 
+    pub r#type: String,
     pub which_price: String,
     pub duration: I64String,
 }

@@ -19,7 +19,7 @@ version = "^0.6.0"
 features = [
   "macros",
   "debug-print",
-  "runtime-tokio-native-tls",
+  "runtime-tokio-rustls",
   "sqlx-postgres",
   "with-chrono"
   # "sqlx-mysql",

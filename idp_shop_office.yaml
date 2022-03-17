@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: idp-shop
+  namespace: idp
+spec:
+  selector:
+    matchLabels:
+      app: idp-shop
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: idp-shop
+    spec:
+      containers:
+      - name: idp-shop
+        image: idp-shop:stable
+        ports:
+        - containerPort: 9001
+          name: resource-port
+        livenessProbe:
+          tcpSocket:
+            port: 9001
+          initialDelaySeconds: 5
+          periodSeconds: 3
+        readinessProbe:
+          tcpSocket:
+            port: 9001
+          initialDelaySeconds: 5
+          periodSeconds: 3
+      imagePullSecrets:
+      - name: hub-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: idp-shop-svc
+  namespace: idp
+  labels:
+    app: idp-shop
+spec:
+  type: ClusterIP
+  ports:
+    - name: idp-shop
+      port: 9001
+      protocol: TCP
+      targetPort: 9001
+  selector:
+    app: idp-shop
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: idp-shop
+  namespace: idp
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
+    nginx.ingress.kubernetes.io/proxy-body-size: 1000m
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/rewrite-target: /api/v1/idp-shop/$1
+    # TODO 测试环境暂时去掉，上生产环境需要补上
+    # nginx.ingress.kubernetes.io/auth-url: http://idp-auth-svc.idp.svc.cluster.local:10001/api/v1/auth/token-validate
+spec:
+  rules:
+  - host: idp.baihai.co
+    http:
+      paths:
+      - backend:
+          serviceName: idp-shop-svc
+          servicePort: 9001
+        path: /2/api/v1/idp-shop/(.*)
+        pathType: ImplementationSpecific

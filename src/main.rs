@@ -1,9 +1,9 @@
 #![allow(dead_code, unused_imports, unused_variables)]
 #![deny(clippy::unwrap_used)]
 mod api_models;
+mod apis;
 mod handler;
 mod route;
-mod apis;
 
 use std::net::SocketAddr;
 use std::str::FromStr;
@@ -31,8 +31,7 @@ async fn main() -> anyhow::Result<()> {
     let app = route::init_router().layer(
         ServiceBuilder::new()
             .layer(CookieManagerLayer::new())
-            .layer(Extension(conn))
-           
+            .layer(Extension(conn)),
     );
 
     let server_url = format!("{}:{}", host, port);

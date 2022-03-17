@@ -1,10 +1,6 @@
 use super::*;
 
-use crate::{
-    api_models::order::*,
-    handler::order::{get_orders},
-};
-
+use crate::{api_models::order::*, handler::order::get_orders};
 
 // get order list by team_id
 // api: /api/v1/idp-shop/order/list
@@ -13,7 +9,6 @@ pub async fn get_order_list(
     cookies: Cookies,
     Query(req): Query<GetOrdersReq>,
 ) -> core::result::Result<Res<GetOrdersRes>, Res<String>> {
-
     let cookie_ids = match get_ids_from_cookie(&cookies) {
         Ok(ids) => ids,
         Err(e) => {

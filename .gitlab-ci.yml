@@ -1,0 +1,13 @@
+stages:
+  - deploy
+
+deploy to k8s:
+  stage: deploy
+  script: 
+  - cargo build --target x86_64-unknown-linux-musl --release
+  - docker build --no-cache -t idp-shop:stable .
+  - sudo kubectl delete -f idp_shop_office.yaml
+  - sudo kubectl apply -f idp_shop_office.yaml
+  # environment:
+  #   name: staging
+  #   url: https://staging.example.com/
