@@ -2,7 +2,7 @@ use super::*;
 
 use crate::{
     api_models::product::*,
-    handler::product::{get_detail, get_products},
+    handler::product::{calculate_products_price, get_detail, get_products},
 };
 
 // get products list
@@ -46,6 +46,22 @@ pub async fn get_product_detail(
             month_price: res.6,
             product_id: res.7.into(),
         })),
+        Err(e) => Err(Res::custom_fail(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            e.to_string(),
+        )),
+    }
+}
+
+// post a list of product with product_id, type, which_price, duration to get total price
+// api: /api/v1/idp-shop/product/price
+pub async fn post_product_price(
+    Extension(ref conn): Extension<DatabaseConnection>,
+    cookies: Cookies,
+    Json(req): Json<GetProductPriceReq>,
+) -> core::result::Result<Res<GetProductPriceRes>, Res<String>> {
+    match calculate_products_price(&conn, &req).await {
+        Ok(res) => Ok(Res::success(GetProductPriceRes { price: res })),
         Err(e) => Err(Res::custom_fail(
             StatusCode::INTERNAL_SERVER_ERROR,
             e.to_string(),

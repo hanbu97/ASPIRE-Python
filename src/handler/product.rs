@@ -58,20 +58,19 @@ pub async fn get_detail(
 
 // post a list of product with product_id, type, which_price, duration to get total price
 // api: /api/v1/idp-shop/product/price
-pub async fn post_products_price(
-    Extension(ref conn): Extension<DatabaseConnection>,
-    req: Json<GetProductPriceReq>,
-) -> Res<GetProductPriceRes> {
+pub async fn calculate_products_price(
+    conn: &DatabaseConnection,
+    req: &GetProductPriceReq,
+) -> anyhow::Result<f32> {
     let product_ids: Vec<i64> = req.products.iter().map(|r| r.product_id.to_i64()).collect();
 
     let items: Vec<products::Model> = Products::find()
         .filter(products::Column::Id.is_in(product_ids))
         .all(conn)
-        .await
-        .unwrap();
+        .await?;
 
     if items.len() != req.products.len() {
-        return Res::fail();
+        return Err(anyhow!("Some product not found"));
     }
 
     let mut p = 0i32;
@@ -87,7 +86,5 @@ pub async fn post_products_price(
         p += tmp_p;
     }
 
-    Res::success(GetProductPriceRes {
-        price: p as f32 / 100.0,
-    })
+    Ok(p as f32 / 100.0)
 }
