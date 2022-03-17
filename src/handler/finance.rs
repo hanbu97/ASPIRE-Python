@@ -4,14 +4,23 @@ use api_models::finance::*;
 use db_schema::data::charge_record as charges;
 use db_schema::data::finance_account as accounts;
 
+use anyhow::anyhow;
+
 pub async fn get_account_balance(
     conn: &DatabaseConnection,
+    user_id: i64,
+    team_id: i64,
     req: GetFinanceAccountReq,
 ) -> anyhow::Result<(f32, f32, f32)> {
     let account: Option<accounts::Model> = Accounts::find()
-        .filter(accounts::Column::Id.eq(req.team_id.to_i64()))
+        .filter(accounts::Column::TeamId.eq(team_id))
+        .filter(accounts::Column::Id.eq(req.account_id.to_i64()))
         .one(conn)
         .await?;
+
+    if account.is_none() {
+        return Err(anyhow!("Account not found"));
+    }
 
     let (total_balance, blocked_balance) = account.map_or((0.0, 0.0), |a| {
         (
@@ -23,8 +32,6 @@ pub async fn get_account_balance(
 
     Ok((total_balance, avl_balance, blocked_balance))
 }
-
-
 
 // get charge status
 // api: /api/v1/idp-shop/finace/charge/status

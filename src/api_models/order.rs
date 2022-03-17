@@ -9,6 +9,7 @@ use db_schema::data::sea_orm_active_enums::{
 };
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Order {
     order_id: I64String,
     created_at: DateTime,
@@ -47,6 +48,7 @@ impl Order {
 
 // api: /api/v1/idp-shop/order/list
 #[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct GetOrdersReq {
     pub team_id: I64String,
     pub page_index: usize,
@@ -54,6 +56,7 @@ pub struct GetOrdersReq {
 }
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct GetOrdersRes {
     pub page_index: usize,
     pub page_size: usize,
@@ -65,29 +68,34 @@ pub struct GetOrdersRes {
 
 // api: /api/v1/idp-shop/order/detail
 #[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct GetOrderDetailReq {
     pub team_id: I64String,
     pub order_id: I64String,
 }
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct GetOrderDetailRes {
     pub order: Order,
 }
 
 // api: /api/v1/idp-shop/order/pay
 #[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct PayOrderReq {
     pub team_id: I64String,
     pub order_id: I64String,
 }
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct PayOrderRes {
     pub status: String,
 }
 
 // api: /api/v1/idp-shop/order/pay post
 #[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct PostPayOrderReq {
     pub team_id: I64String,
     pub user_id: I64String,
@@ -95,12 +103,14 @@ pub struct PostPayOrderReq {
     pub r#type: String,
 }
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct PostPayOrderRes {
     pub status: String,
 }
 
 // api: /api/v1/idp-shop/order/create
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(rename_all = "camelCase")]
 pub struct Price {
     pub product_id: I64String,
     pub which_price: String,
@@ -108,6 +118,7 @@ pub struct Price {
 }
 
 #[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct PostCreateOrderReq {
     pub team_id: I64String,
     pub user_id: I64String,
@@ -115,6 +126,7 @@ pub struct PostCreateOrderReq {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct SubOrder {
     pub product_id: I64String,
     pub name: String,
@@ -126,6 +138,7 @@ pub struct SubOrder {
 }
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct PostCreateOrderRes {
     pub order_id: I64String,
     pub total_price: f32,

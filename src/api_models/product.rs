@@ -3,6 +3,7 @@ use chrono::Duration;
 use super::*;
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Product {
     product_id: I64String,
     name: String,
@@ -31,12 +32,14 @@ impl Product {
 
 // api: /api/v1/idp-shop/product/list
 #[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct GetProductsReq {
     pub page_index: usize,
     pub page_size: usize,
 }
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct GetProductsRes {
     pub page_index: usize,
     pub page_size: usize,
@@ -48,11 +51,13 @@ pub struct GetProductsRes {
 
 // api: /api/v1/idp-shop/product/detail
 #[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct GetProductDetailReq {
     pub product_id: I64String,
 }
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct GetProductDetailRes {
     pub product_id: I64String,
     pub name: String,
@@ -66,6 +71,7 @@ pub struct GetProductDetailRes {
 
 // api: /api/v1/idp-shop/product/price
 #[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct Price {
     pub product_id: I64String,
     pub which_price: String,
@@ -73,11 +79,13 @@ pub struct Price {
 }
 
 #[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct GetProductPriceReq {
     pub products: Vec<Price>,
 }
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct GetProductPriceRes {
     pub price: f32,
 }

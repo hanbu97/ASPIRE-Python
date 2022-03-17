@@ -1,6 +1,7 @@
 use super::*;
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Service {
     service_id: I64String,
     created_at: DateTime,
@@ -27,6 +28,7 @@ impl Service {
 
 // api: /api/v1/idp-shop/service/list
 #[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct GetServicesReq {
     pub team_id: usize,
     pub page_index: usize,
@@ -34,6 +36,7 @@ pub struct GetServicesReq {
 }
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct GetServicesRes {
     pub page_index: usize,
     pub total_pages: usize,

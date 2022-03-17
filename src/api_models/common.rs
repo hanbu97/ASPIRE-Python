@@ -1,3 +1,4 @@
+use axum::http::StatusCode;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 use std::fmt::Debug;
@@ -34,10 +35,10 @@ impl<T: Serialize> Res<T> {
         }
     }
 
-    pub fn custom_fail(message: String) -> Self {
+    pub fn custom_fail(code: StatusCode, message: String) -> Self {
         Self {
             data: None,
-            code: Self::CODE_FAIL,
+            code: code.as_u16(),
             message,
         }
     }

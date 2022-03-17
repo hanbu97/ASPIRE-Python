@@ -1,6 +1,7 @@
 use super::*;
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Account {
     product_id: I64String,
     name: String,
@@ -25,11 +26,13 @@ impl Account {
 
 // api: /api/v1/idp-shop/finance/account
 #[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct GetFinanceAccountReq {
-    pub team_id: I64String,
+    pub account_id: I64String,
 }
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct GetFinanceAccountRes {
     pub total_balance: f32,
     pub avl_balance: f32,
@@ -38,11 +41,13 @@ pub struct GetFinanceAccountRes {
 
 // api: /api/v1/idp-shop/finance/charge/status
 #[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct GetChargeStatusReq {
     pub team_id: I64String,
     pub charge_id: I64String,
 }
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct GetChargeStatusRes {
     pub status: String,
 }
