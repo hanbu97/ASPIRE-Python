@@ -1,4 +1,30 @@
+[package]
+name = "idppay"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
 [workspace]
-members = [
-    "crates/*"
-]
+members = [".", "db_schema", "migration"]
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+tokio = { version = "1", features = ["full"] }
+axum = { version = "0.4" }
+tower = "0.4"
+tower-http = { version = "0.2", features = ["fs"] }
+tower-cookies = { version = "0.5" }
+anyhow = "1"
+dotenv = "0.15"
+serde_json = "1"
+tera = "1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+db_schema = {path = "db_schema"}
+migration = { path = "migration" }
+rand = "0.8"
+quickcheck = "1"
+quickcheck_macros = "1"
+chrono = { version = "0.4", features = ["serde"] }
+futures = "0.3"
+
