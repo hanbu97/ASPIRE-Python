@@ -62,7 +62,7 @@ pub fn today_to_next_month_hours(n_months: Option<i32>) -> i32 {
         today.day(),
     ));
 
-    to_next_month.num_hours() as i32
+    to_next_month.num_hours() as i32 - today.hour() as i32
 }
 
 // #[derive(Serialize)]

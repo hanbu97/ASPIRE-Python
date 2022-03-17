@@ -4,8 +4,6 @@ use api_models::finance::*;
 use db_schema::data::charge_record as charges;
 use db_schema::data::finance_account as accounts;
 
-use anyhow::anyhow;
-
 pub async fn get_account_balance(
     conn: &DatabaseConnection,
     user_id: i64,

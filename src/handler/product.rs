@@ -8,8 +8,7 @@ use api_models::product::*;
 use db_schema::{data::products, sea_orm::Condition};
 use migration::sea_query::Expr;
 
-// get products
-// api: /api/v1/idp-shop/product/list
+// get products list
 pub async fn get_products(
     conn: &DatabaseConnection,
     req: &GetProductsReq,
@@ -32,31 +31,28 @@ pub async fn get_products(
 }
 
 // get product detail by product_id
-// api: /api/v1/idp-shop/product/detail
-pub async fn get_product_detail(
-    Extension(ref conn): Extension<DatabaseConnection>,
-    Query(req): Query<GetProductDetailReq>,
-) -> Res<GetProductDetailRes> {
+pub async fn get_detail(
+    conn: &DatabaseConnection,
+    req: &GetProductDetailReq,
+) -> anyhow::Result<(String, String, String, String, String, f32, f32, i64)> {
     let product: Option<products::Model> = Products::find()
+        .filter(products::Column::IsDeleted.eq(false))
         .filter(products::Column::Id.eq(req.product_id.to_i64()))
         .one(conn)
-        .await
-        .unwrap();
+        .await?;
 
     match product {
-        Some(product) => Res::success(GetProductDetailRes {
-            detail: product.detail.unwrap_or("".to_string()),
-            name: product.name,
-            specification: product.specification,
-            created_time: product.created_at.to_string(),
-            r#type: product.r#type,
-            price: product.price.unwrap_or(0) as f32 / 100.0,
-            month_price: (product.month_price.unwrap_or(0) * today_to_next_month_hours(None))
-                as f32
-                / 100.0,
-            product_id: product.id.into(),
-        }),
-        None => Res::fail(),
+        Some(product) => Ok((
+            product.detail.unwrap_or("".to_string()),
+            product.name,
+            product.specification,
+            product.created_at.to_string(),
+            product.r#type,
+            product.price.unwrap_or(0) as f32 / 100.0,
+            (product.month_price.unwrap_or(0) * today_to_next_month_hours(None)) as f32 / 100.0,
+            product.id,
+        )),
+        None => Err(anyhow!("Product not found")),
     }
 }
 

@@ -61,7 +61,7 @@ pub struct GetProductDetailReq {
 pub struct GetProductDetailRes {
     pub product_id: I64String,
     pub name: String,
-    pub created_time: String,
+    pub created_at: String,
     pub r#type: String,
     pub price: f32,
     pub month_price: f32,
