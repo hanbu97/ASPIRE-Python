@@ -1,7 +1,2 @@
 /target
-.idea
-.env
-config.toml
-# 理论上 binary 的应用需要 lock 文件锁版本，目前为了多人快速开发避免 lock 文件冲突暂时不锁版本
-Cargo.lock
-temp
+
