@@ -16,27 +16,17 @@ pub async fn get_finance_account(
     Query(req): Query<GetFinanceAccountReq>,
     cookies: Cookies,
 ) -> core::result::Result<Res<GetFinanceAccountRes>, Res<String>> {
-    let user_id = match cookies.get("userId") {
-        Some(c) => c.value().parse::<i64>().unwrap(),
-        None => {
+    let cookie_ids = match get_ids_from_cookie(&cookies) {
+        Ok(ids) => ids,
+        Err(e) => {
             return Err(Res::custom_fail(
                 StatusCode::INTERNAL_SERVER_ERROR,
-                "userId not found in cookie".to_string(),
-            ))
+                e.to_string(),
+            ));
         }
     };
 
-    let team_id = match cookies.get("teamId") {
-        Some(c) => c.value().parse::<i64>().unwrap(),
-        None => {
-            return Err(Res::custom_fail(
-                StatusCode::INTERNAL_SERVER_ERROR,
-                "teamId not found in cookie".to_string(),
-            ))
-        }
-    };
-
-    match get_account_balance(&conn, user_id, team_id, req).await {
+    match get_account_balance(&conn, cookie_ids.user_id, cookie_ids.team_id, req).await {
         Ok(res) => Ok(Res::success(GetFinanceAccountRes {
             total_balance: res.0,
             avl_balance: res.1,

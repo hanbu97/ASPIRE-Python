@@ -17,6 +17,8 @@ use futures::future::join_all;
 use futures::TryFutureExt;
 use migration::sea_query::Expr;
 
+// get order list by team_id
+// api: /api/v1/idp-shop/order/list
 pub async fn get_orders(
     Extension(ref conn): Extension<DatabaseConnection>,
     Query(req): Query<GetOrdersReq>,
