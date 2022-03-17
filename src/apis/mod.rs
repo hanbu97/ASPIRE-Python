@@ -1,5 +1,6 @@
-pub use axum::extract::{Extension, Json, Query};
 use anyhow::anyhow;
+pub use axum::extract::{Extension, Json, Query};
+use axum::http::StatusCode;
 
 use db_schema::data::prelude::*;
 pub use db_schema::sea_orm;
@@ -9,6 +10,8 @@ pub use sea_orm::{
 };
 use serde::Serialize;
 use tower_cookies::{CookieManagerLayer, Cookies};
+
+use crate::api_models::common::Res;
 
 pub mod finance;
 pub mod order;
@@ -23,7 +26,6 @@ pub struct CookieIds {
 
 // parse cookie
 pub fn get_ids_from_cookie(cookies: &Cookies) -> anyhow::Result<CookieIds> {
-
     let user_id = if let Some(t) = cookies.get("userId") {
         t.value().parse::<i64>()?
     } else {

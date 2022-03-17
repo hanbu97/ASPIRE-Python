@@ -11,24 +11,24 @@ use migration::sea_query::Expr;
 // get products
 // api: /api/v1/idp-shop/product/list
 pub async fn get_products(
-    Extension(ref conn): Extension<DatabaseConnection>,
-    Query(req): Query<GetProductsReq>,
-) -> Res<GetProductsRes> {
+    conn: &DatabaseConnection,
+    req: &GetProductsReq,
+) -> anyhow::Result<(usize, usize, usize, Vec<Product>)> {
     let paginator = Products::find()
         .filter(products::Column::IsDeleted.eq(false))
         .order_by_desc(products::Column::CreatedAt)
         .paginate(conn, req.page_size);
-    let total_items = paginator.num_items().await.unwrap();
-    let products = paginator.fetch_page(req.page_index).await.unwrap();
+    let total_items = paginator.num_items().await?;
+    let products = paginator.fetch_page(req.page_index).await?;
 
-    Res::success(GetProductsRes {
-        page_index: req.page_index,
-        page_size: req.page_size,
-        page_items: products.len(),
+    let total_pages = (total_items as f64 / req.page_size as f64).ceil() as usize;
+
+    Ok((
+        products.len(),
         total_items,
-        total_pages: total_items / req.page_size + 1,
-        products: products.into_iter().map(Product::from_db_model).collect(),
-    })
+        total_pages,
+        products.into_iter().map(Product::from_db_model).collect(),
+    ))
 }
 
 // get product detail by product_id

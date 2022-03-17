@@ -21,7 +21,7 @@ pub fn init_router() -> Router {
             .nest(
                 "/product",
                 Router::new()
-                    .route("/list", get(handler::product::get_products))
+                    .route("/list", get(apis::product::get_product_list))
                     .route("/detail", get(handler::product::get_product_detail))
                     .route("/price", post(handler::product::post_products_price)),
             )
