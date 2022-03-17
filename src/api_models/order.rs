@@ -50,7 +50,6 @@ impl Order {
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct GetOrdersReq {
-    pub team_id: I64String,
     pub page_index: usize,
     pub page_size: usize,
 }

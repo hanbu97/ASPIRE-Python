@@ -18,26 +18,27 @@ use futures::TryFutureExt;
 use migration::sea_query::Expr;
 
 // get order list by team_id
-// api: /api/v1/idp-shop/order/list
 pub async fn get_orders(
-    Extension(ref conn): Extension<DatabaseConnection>,
-    Query(req): Query<GetOrdersReq>,
-) -> Res<GetOrdersRes> {
+    conn: &DatabaseConnection,
+    team_id: i64,
+    req: &GetOrdersReq,
+) -> anyhow::Result<(usize, usize, usize, Vec<Order>)> {
     let paginator = Orders::find()
-        .filter(orders::Column::TeamId.eq(req.team_id.to_i64()))
+        .filter(orders::Column::IsDeleted.eq(false))
+        .filter(orders::Column::TeamId.eq(team_id))
         .order_by_desc(orders::Column::CreatedAt)
         .paginate(conn, req.page_size);
     let total_items = paginator.num_items().await.unwrap();
     let orders = paginator.fetch_page(req.page_index).await.unwrap();
 
-    Res::success(GetOrdersRes {
-        page_index: req.page_index,
-        page_size: req.page_size,
-        page_items: orders.len(),
+    let total_pages = (total_items as f64 / req.page_size as f64).ceil() as usize;
+
+    Ok((
+        orders.len(),
         total_items,
-        total_pages: total_items / req.page_size + 1,
-        orders: orders.into_iter().map(Order::from_db_model).collect(),
-    })
+        total_pages,
+        orders.into_iter().map(Order::from_db_model).collect(),
+    ))
 }
 
 // get order detail by order_id

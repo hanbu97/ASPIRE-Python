@@ -10,7 +10,7 @@ pub fn init_router() -> Router {
             .nest(
                 "/order",
                 Router::new()
-                    .route("/list", get(handler::order::get_orders))
+                    .route("/list", get(apis::order::get_order_list))
                     .route("/detail", get(handler::order::get_order_detail))
                     .route(
                         "/pay",
