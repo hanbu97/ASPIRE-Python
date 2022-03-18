@@ -35,7 +35,8 @@ use quickcheck::{Arbitrary, Gen};
 impl Arbitrary for Model {
     fn arbitrary(g: &mut Gen) -> Model {
         let test_range = (1..100000).into_iter().collect::<Vec<u32>>();
-        let status = vec!["pending", "success", "failed"];
+        let types = vec!["compute", "storage", "network", "server"];
+        let status = vec!["compute", "storage", "network", "server"];
         let names = vec![
             "service_name1",
             "product_name2",
@@ -57,7 +58,7 @@ impl Arbitrary for Model {
             version: g.choose(&test_range).unwrap().to_owned() as i32,
             name: g.choose(&names).unwrap().to_string(),
             resource_setmeal_id: Some(g.choose(&test_range).unwrap().to_owned() as i64),
-            r#type: g.choose(&status).unwrap().to_string(),
+            r#type: g.choose(&types).unwrap().to_string(),
             detail: Some(g.choose(&names).unwrap().to_string()),
             specification: g.choose(&sps).unwrap().to_string(),
             price: Some(g.choose(&test_range).unwrap().to_owned() as i32),
